@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Admin\ProjectController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,4 +23,13 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('admin/projects', ProjectController::class);
+});
+
+
 require __DIR__.'/auth.php';
+
+
