@@ -1,9 +1,13 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Admin\ProjectController;
+// Controllers
+// Guest
+use App\Http\Controllers\MainController;
+use App\Http\Controllers\Admin\MainController as AdminMainController;
+use App\Http\Controllers\Admin\PostController as AdminPostController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,21 +19,19 @@ use App\Http\Controllers\Admin\ProjectController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [MainController::class, 'index'])->name('home');
+
+Route::prefix('admin')          // Il prefix è il prefisso dell'URI (cioè la parte iniziale dell'URI che definirò nelle rotte del gruppo)
+    ->name('admin.')            // Il name è il prefisso del nome delle rotte che definirò nel gruppo
+    ->middleware('auth')
+    ->group(function () {
+
+    Route::get('/dashboard', [AdminMainController::class, 'dashboard'])->name('dashboard');
+
+    Route::resource('posts', AdminPostController::class);
+    // Questo comando crea 7 rotte:
+    // 1 - Route::get('/admin/posts', [AdminPostController::class, 'index'])->name('admin.posts.index');
+
 });
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-
-
-Route::middleware(['auth'])->group(function () {
-    Route::resource('admin/projects', ProjectController::class);
-});
-
 
 require __DIR__.'/auth.php';
-
-
